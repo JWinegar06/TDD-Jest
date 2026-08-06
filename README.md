@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Todo App - TDD Project
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a simple Todo application built with Next.js and TypeScript. It was created to practice Test Driven Development (TDD) using Jest and React Testing Library.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+The application allows users to:
+
+- Add new todos
+- Mark todos as completed
+- Delete todos
+- Prevent empty todos from being added
+- Display a message when there are no todos
+- Handle errors when saving a todo
+
+## TDD Practices
+
+The project follows the **Red-Green-Refactor** TDD process:
+
+1. **Red** - Write a test that initially fails.
+2. **Green** - Write the code needed to make the test pass.
+3. **Refactor** - Clean up the code while keeping the tests passing.
+
+Unit tests were created for individual components, while integration tests were used to make sure the components work together.
+
+Tests were written using:
+
+- Jest
+- React Testing Library
+- User Event
+
+## Mocking
+
+Jest mocks are used to test external dependencies without making real network requests.
+
+The `todoService` is mocked when testing the `AddTodo` component:
+
+```tsx
+jest.mock("../services/todoService");
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The `fetch` function is also mocked when testing the service:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```tsx
+const mockFetch = jest.fn();
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+global.fetch = mockFetch;
+```
 
-## Learn More
+Mocking makes the tests faster, predictable, and independent from a real API.
 
-To learn more about Next.js, take a look at the following resources:
+## Test Files
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+src/__tests__/
+├── AddTodo.test.tsx
+├── App.test.tsx
+├── Header.test.tsx
+├── Nav.test.tsx
+├── TodoItem.test.tsx
+├── TodoList.test.tsx
+└── TodoService.test.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Challenges
 
-## Deploy on Vercel
+One challenge was testing asynchronous behavior after adding the `todoService`. Some tests had to use asynchronous queries such as `findByText` to wait for the UI to update.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Another challenge occurred when testing `fetch`. Jest did not have `fetch` available in the test environment, so a mock `fetch` function was created.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+These changes helped keep the tests isolated and prevented real network requests during testing.
+
+## Running the Tests
+
+Run all tests:
+
+```bash
+npm test
+```
+
+Run tests with coverage:
+
+```bash
+npm test -- --coverage
+```
+
+## What I Learned
+
+This project helped me understand how TDD can be used to build features in small steps. I also learned how to use unit tests, integration tests, asynchronous testing, and Jest mocks to test a Next.js application.
